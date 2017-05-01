@@ -1,20 +1,13 @@
 <?php
 
-function recipe_form_recipe_node_form_form_alter(&$form, &$form_state){
-  var_dump('this is working');
-    $form['image'] = array (
-    '#type' => 'textfield',
-    '#description' => 'recipe image',
-    'title' => t('image'),
-  );
+function img_form_alter(&$form, &$form_state, $form_id){
+    var_dump('this is working');
+    if($form_id === 'recipe_node_form') {
+      $form['image'] = array (
+      '#type' => 'textfield',
+      '#description' => 'recipe image',
+      '#title' => t('Image'),
+      );
+    }
 
-  $order = array (
-  'image',
-  'title',
-  'yield units'
-);
-
-foreach ($order as $key => $field) {
-  $form[$field]['#weight'] = $key;
-  }
 }
