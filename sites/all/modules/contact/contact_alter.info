@@ -1,0 +1,5 @@
+name = Contact form customization
+description =  Remove send yourself a copy from contact form.
+package = Epicodus Examples
+core = 7.x
+files[] = contact_alter.module

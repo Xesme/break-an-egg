@@ -1,13 +1,23 @@
 <?php
 
 function img_form_alter(&$form, &$form_state, $form_id){
-    var_dump('this is working');
     if($form_id === 'recipe_node_form') {
       $form['image'] = array (
       '#type' => 'textfield',
       '#description' => 'recipe image',
       '#title' => t('Image'),
       );
+      // $form['#submit'][] = 'save_to_db';
     }
+  }
 
-}
+
+  function save_to_db() {
+    db_insert('recipe')
+    ->fields(array(
+      'image' => $node->image['value']
+    ))
+    ->execute();
+
+    recipe_save_ingredients($node);
+  }
