@@ -1,0 +1,5 @@
+name = Image recipes
+description = This is an alter x hook module for the recipe module. It allow the user to add an img to the recipe.
+package = Epicodus Examples
+core = 7.x
+files[] = img.module

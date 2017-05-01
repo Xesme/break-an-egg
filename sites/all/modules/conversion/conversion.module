@@ -1,0 +1,111 @@
+<?php
+
+
+/**
+ * Implements hook_menu().
+ */
+function conversion_menu() {
+  $items['admin/config/conversion'] = array(
+    'title' => 'Conversion Settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('conversion_settings'),
+    'access arguments' => array('administer site configuration'),
+  );
+
+  return $items;
+}
+
+function conversion_settings() {
+  $form['conversion_disable_password_confirmation'] = array(
+    '#title' => 'Disable password confirmation box on registration',
+    '#type' => 'checkbox',
+    '#description' => t("If selected, the password confirmation box will be disabled on registration"),
+    '#default_value' => variable_get('conversion_disable_password_confirmation', FALSE),
+  );
+  $form['conversion_autopublish'] = array(
+    '#title' => 'Autopublish node on registration',
+    '#type' => 'checkbox',
+    '#description' => t("If selected, the node the anonymous user created will be automatically published after user creates an account"),
+    '#default_value' => variable_get('conversion_autopublish', TRUE),
+  );
+  $form['conversion_redirect'] = array(
+    '#title' => 'Redirect anonymous user after submitting a node',
+    '#type' => 'textfield',
+    '#description' => t("Anonymous user will be redirected to this path after submitting a node.
+    Leave blank for none, user/register for registration page."),
+    '#default_value' => variable_get('conversion_redirect', 'user/register'),
+  );
+  $form['conversion_message'] = array(
+    '#title' => 'Message after submitting a node',
+    '#type' => 'textfield',
+    '#description' => t("Enter a message to display to the user after node submission."),
+    '#default_value' => variable_get('conversion_message', t("Please create an account to continue.")),
+  );
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_node_presave().
+ */
+function conversion_node_presave($node) {
+  global $user;
+  if (!$user->uid && variable_get('conversion_unpublish_anon', TRUE)) {
+    $node->status = 0;
+  }
+}
+
+
+/**
+ * Implements hook_node_insert().
+ */
+function conversion_node_insert($node) {
+  global $user;
+  if (!$user->uid) {
+    $_SESSION['conversion'][] = $node->nid;
+    if ($message = variable_get('conversion_message', t("Please create an account to continue."))) {
+      drupal_set_message(check_plain($message), 'notice');
+    }
+    if ($dest = variable_get('conversion_redirect', 'user/register')) {
+      drupal_goto($dest);
+    }
+  }
+}
+
+/**
+ * Implements hook_user_insert().
+ */
+function conversion_user_insert($edit, $account) {
+  if (!empty($_SESSION['conversion'])) {
+    foreach ($_SESSION['conversion'] as $nid) {
+      $node = node_load($nid, NULL, TRUE);
+      $node->uid = $account->uid;
+      if (variable_get('conversion_autopublish', TRUE)) {
+        $node->status = 1;
+      }
+      //Switch to admin user to get around access control
+      global $user;
+      $current_user = $user;
+      $user = user_load(1);
+      node_save($node);
+      $user = $current_user;
+    }
+  }
+}
+
+/**
+* Implements hook_form_alter().
+*/
+function conversion_form_alter(&$form, &$form_state, $form_id) {
+  switch ($form_id) {
+    case 'user_register_form': 
+      if (variable_get('conversion_disable_password_confirmation', FALSE)) {
+        $form['account']['pass']['#type'] = "password";
+        $form['account']['pass']['#title'] = t("Password");
+        $form['account']['pass']['#description'] = t("Provide a password for the new account");
+      }
+    break;
+  }
+}
+
+
+
