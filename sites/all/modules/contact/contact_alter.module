@@ -7,6 +7,9 @@
     // contact_site_form
 
     if($form_id === 'contact_site_form') {
-      $form['copy'] = FALSE;
+        $form['copy']['#type'] = 'hidden';
+        $form['copy']['#default_value'] = 1;
+        $form['subject']['#type'] = 'hidden';
+        $form['subject']['#default_value'] = "feedback";
       }
   }
