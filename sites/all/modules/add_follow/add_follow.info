@@ -1,0 +1,5 @@
+name = Add follow
+description =  Add follow to page.
+package = Epicodus Examples
+core = 7.x
+files[] = add_follow.module

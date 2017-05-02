@@ -1,0 +1,13 @@
+<?php
+
+function add_follow_follow_networks_alter(&$networks, $uid = 0){
+  $network['$uid']['imdb'] = array(
+    'title' => t('IMDB'),
+    'domain' => 'imdb.com',
+  );
+  $network['$uid']['drupal'] = array(
+    'title' => t('Drupal'),
+    'domain' => 'drupal.org',
+  );
+
+}
