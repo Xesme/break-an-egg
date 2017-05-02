@@ -1,0 +1,6 @@
+name = Add social
+description =  Add follow to page.
+package = Epicodus Examples
+core = 7.x
+files[] = add_social.module
+stylesheets[all][] = add_social.css

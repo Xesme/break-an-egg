@@ -1,5 +1,14 @@
 <?php
 
+function img_menu() {
+  $items['node/15'] = array (
+ 'title' => 'Success',
+ 'page callback' => 'recipe_success',
+ 'access callback' => TRUE,
+ 'type' => MENU_CALLBACK,
+  );
+}
+
 function img_form_alter(&$form, &$form_state, $form_id){
     if($form_id === 'recipe_node_form') {
       $form['image'] = array (
@@ -7,17 +16,45 @@ function img_form_alter(&$form, &$form_state, $form_id){
       '#description' => 'recipe image',
       '#title' => t('Image'),
       );
-      // $form['#submit'][] = 'save_to_db';
+      $form['#submit']['recipe_node_form'] = 'save_to_db';
     }
   }
 
 
-  function save_to_db() {
-    db_insert('recipe')
-    ->fields(array(
-      'image' => $node->image['value']
-    ))
-    ->execute();
-
-    recipe_save_ingredients($node);
+  function save_to_db($form, &$form_state) {
+    $image_url = $form_state['values']['image'];
+    $_SESSION['image_url'] = $image_url;
   }
+
+  function recipe_success() {
+    $image = $_SESSION['image_url'];
+    var_dump($image);
+    return '<img src='.$image.'>';
+  }
+
+    // db_insert('recipe')
+    //   ->fields(array(
+    //     'title'=>'Image',
+    //   ))
+    //   ->execute();
+    // db_select('ALTER TABLE {recipe} ADD img TEXT;')->execute();
+
+    // db_query('INSERT INTO {recipe} (img) VALUES (img);')->execute();
+
+    // recipe_save_ingredients($node);
+  // }
+
+
+  // fields(array(
+  // 'img' => $node->img))
+
+  // $node->recipe = $_POST['image'] / $node->img;
+
+
+  // db_insert('recipe')
+  // ->fields(array(
+  //   'image' => $node->image['value']
+  // ))
+  // ->execute();
+  //
+  // recipe_save_ingredients($node);

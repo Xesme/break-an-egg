@@ -1,0 +1,13 @@
+<?php
+
+function add_social_follow_networks_alter(&$networks, $uid = 0){
+  $networks[$uid]['pin'] = array(
+    'title' => t('Pinterest'),
+    'domain' => 'pinterest.com',
+  );
+  $networks[$uid]['drupal'] = array(
+    'title' => t('Drupal'),
+    'domain' => 'drupal.org',
+  );
+
+}

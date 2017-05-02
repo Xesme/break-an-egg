@@ -1,0 +1,15 @@
+
+.follow-link-pin:hover {
+  color: green;
+  /*margin-left: 5px;*/
+}
+
+a.follow-link {
+      display: block;
+      height: 30px;
+      line-height: 26px;
+      background-position: 0 0;
+      background-repeat: no-repeat;
+      padding-left: 28px;
+      padding-right: 3px;
+}
